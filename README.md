@@ -14,7 +14,11 @@ Open a terminal window in the player1 folder and run the following commands:
 docker build -t player1 .
 docker run -it -p 8080:80 --rm --name dockerize-player1 player1
 ```
-Similarly, repeat the above step for the player2 folder and replace player1 with player2.
+Similarly, repeat the above step for the player2 folder by opening another terminal window in the player2 folder and running the following commands:
+```sh
+docker build -t player1 .
+docker run -it -p 8081:80 --rm --name dockerize-player2 player2
+```
 
 That's it! The two programs should be running on 
 ```sh
