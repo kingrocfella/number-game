@@ -17,6 +17,7 @@ npm install
 npm run dev
 ```
 Similarly, repeat the above step to set up an opponent for the main player.
+You'd also need internet connection for this project.
 
 That's it! The two players should be running on:
 ```sh
