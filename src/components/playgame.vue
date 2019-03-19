@@ -1,6 +1,5 @@
 <template>
   <div>
-    <headerbar/>
     <div class="container playgame">
       <div class="row mainheader" style="background-color: #50aadd;">
         <div class="col-sm-4"></div>
@@ -12,6 +11,45 @@
         </div>
       </div>
       <br>
+
+      <br>
+      <br>
+      <div v-for="item in playerDetails"
+          :key="item['.key']"
+          style="margin-bottom: 70px;">
+        <div class="row" v-if="item['selectedNumber']">
+          <div class="col-sm-3 text-center" v-if="item['name'] === name">
+            <strong class="user">{{item['selectedNumber']}}</strong>
+          </div>
+          <div class="col-sm-3 text-center" v-if="item['name'] !== name">
+          </div>
+          <div class="col-sm-6"></div>
+          <div class="col-sm-3 text-center" v-if="item['name'] !== name">
+            <strong class="user">{{item['selectedNumber']}}</strong>
+          </div>
+        </div>
+        <br>
+        <div class="row">
+          <div class="col-sm-3 text-center" v-if="item['name'] === name">
+            <strong class="user">{{item['name']}}</strong>
+          </div>
+          <div class="col-sm-3 text-center" v-if="item['name'] !== name">
+          </div>
+          <div class="col-sm-6">
+            <div class="card">
+              <div class="card-body">
+                <blockquote class="blockquote mb-0">
+                  <p v-if="item['exp']" style="font-size: 16px;">{{item['exp']}}</p>
+                  <strong>{{item['number']}}</strong>
+                </blockquote>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-3 text-center" v-if="item['name'] !== name">
+            <strong class="user">{{item['name']}}</strong>
+          </div>
+        </div>
+      </div>
       <div class="row" v-if="!wonGame && !lostGame">
         <div class="col-sm-5 text-center" @click="sendData('-1')" style="cursor: pointer;">
           <span class="dot float-right">-1</span>
@@ -21,28 +59,6 @@
         </div>
         <div class="col-sm-2 text-center" @click="sendData('1')" style="cursor: pointer;">
           <span class="dot">1</span>
-        </div>
-      </div>
-      <br>
-      <br>
-      <div
-        class="row"
-        v-for="item in playerDetails"
-        :key="item['.key']"
-        style="margin-bottom: 15px;"
-      >
-        <div class="col-sm-3 text-center">
-          <strong class="user">{{item['name']}}</strong>
-        </div>
-        <div class="col-sm-6">
-          <div class="card">
-            <div class="card-body">
-              <blockquote class="blockquote mb-0">
-                <p v-if="item['exp']" style="font-size: 16px;">{{item['exp']}}</p>
-                <strong>{{item['number']}}</strong>
-              </blockquote>
-            </div>
-          </div>
         </div>
       </div>
       <!-- win Modal -->
@@ -136,7 +152,7 @@
 <script>
 import { playerRef, databaseDel } from "../firebase/firebase.js";
 import axios from "axios";
-import headerbar from "./header";
+
 export default {
   data() {
     return {
@@ -147,9 +163,6 @@ export default {
       lostGame: "",
       playerDetails: []
     };
-  },
-  components: {
-    headerbar: headerbar
   },
   created() {
     //retrieve player name from vuex store on page load
@@ -163,7 +176,13 @@ export default {
     playerDetails: playerRef
   },
   mounted() {
-    document.body.style.backgroundColor = "#fcfcfc";
+    document.body.style.backgroundColor = "#f7faff";
+  },
+  updated: function() {
+    window.scrollTo(
+      0,
+      document.body.scrollHeight || document.documentElement.scrollHeight
+    );
   },
   watch: {
     playerDetails: function(value) {
@@ -205,12 +224,9 @@ export default {
         this.lostGame = false;
         let len = this.playerDetails.length;
         let newNumber = Math.floor(
-          (Number(this.playerDetails[len - 1]["number"]) +
-            Number(this.number)) /
-            3
+          Number(this.playerDetails[len - 1]["number"]) / 3
         );
-        let divisor =
-          Number(this.playerDetails[len - 1]["number"]) + Number(this.number);
+        let divisor = Number(this.playerDetails[len - 1]["number"]);
 
         playerRef.push({
           name: this.name,
@@ -254,15 +270,17 @@ export default {
             if (newNumber < 1) {
               newNumber = 1;
             }
-            playerRef.push({
-              name: this.name,
-              number: newNumber,
-              exp: "[" + String(divisor) + "/" + 3 + "] = " + newNumber
-            });
+            playerRef
+              .push({
+                name: this.name,
+                number: newNumber,
+                selectedNumber: this.number,
+                exp: "[" + String(divisor) + "/" + 3 + "] = " + newNumber
+              });
           } else {
             alert("Please wait for your opponent to respond!");
           }
-        } 
+        }
       } else {
         alert("Please choose an option from the dropdown!");
       }

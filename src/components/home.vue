@@ -1,6 +1,5 @@
 <template>
   <div>
-    <headerbar/>
     <div class="container">
       <div class="row" style="margin-top: 5%;">
         <div class="col-sm-3"></div>
@@ -39,16 +38,12 @@
 <script>
 import { playerRef, databaseDel } from "../firebase/firebase.js";
 import axios from "axios";
-import headerbar from "./header";
 export default {
   data() {
     return {
       name: "",
       loader: false
     };
-  },
-  components: {
-    headerbar: headerbar
   },
   created() {
     //if playername still exists, redirect back to the play page
